@@ -13,8 +13,8 @@ const firebaseConfig = {
   projectId: "jarmu-menedzser",
   storageBucket: "jarmu-menedzser.firebasestorage.app",
   messagingSenderId: "519293220910",
-  appId: "1:519293220910:web:d868c144a6149f5b17c7bf",
-  measurementId: "G-X1FKSEP9LC"
+  appId: "1:519293220910:web:8c5c3b29123107c817c7bf",
+  measurementId: "G-QCDVZR8843"
 };
 // Init Firebase
 const app = initializeApp(firebaseConfig);
@@ -29,4 +29,5 @@ export { auth, signInWithEmailAndPassword };
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
+
 // https://firebase.google.com/docs/web/setup#available-libraries
