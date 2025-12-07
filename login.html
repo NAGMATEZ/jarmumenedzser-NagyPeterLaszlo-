@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <title>Bejelentkezés — Autóügyfél</title>
+
+  <link href="assets/cdn.prod.website-files.com/69343d21d8219ff1c7818ef0/css/autougyfel-alkalmazas-jarmumenedzsment.webflow.shared.420b0b400.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Urbanist:500" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,500" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <style>
+    .auth-wrap { max-width:420px; margin:64px auto; padding:28px; border-radius:12px; box-shadow:0 8px 30px rgba(10,10,20,0.06); background:#fff; }
+    .auth-title { font-size:20px; margin-bottom:8px; font-weight:600; }
+    .auth-sub { margin-bottom:18px; color:#666; }
+    .w-input { width:100%; padding:10px 12px; margin-bottom:12px; border:1px solid #e6e8f0; border-radius:8px; }
+    .w-button { width:100%; padding:10px 12px; border-radius:8px; }
+    .message { display:none; margin-top:12px; font-size:14px; }
+  </style>
+</head>
+
+<body class="color-scheme-1">
+
+  <div class="navbar8_component color-scheme-1 w-nav">
+    <div class="navbar8_container">
+      <a href="/" class="navbar8_logo-link w-nav-brand">
+        <img height="32" src="assets/cdn.prod.website-files.com/69343d21d8219ff1c7818ef0/69343ef307251499f3e104dd_relume-575823.jpeg" class="navbar8_logo" alt="">
+      </a>
+    </div>
+  </div>
+
+  <div class="auth-wrap">
+    <div class="auth-title">Bejelentkezés</div>
+    <div class="auth-sub">Lépj be a fiókodba.</div>
+
+    <form id="login-form" onsubmit="return false;">
+      <input id="login-email" class="w-input" type="email" placeholder="E-mail cím" required>
+      <input id="login-pass" class="w-input" type="password" placeholder="Jelszó" required>
+      <button id="login-btn" class="w-button">Bejelentkezés</button>
+      <div id="login-msg" class="message"></div>
+    </form>
+
+    <div style="margin-top:12px; font-size:14px">
+      Nincs még fiókod? <a href="register.html">Regisztráció</a>
+    </div>
+
+    <footer>© 2025 Autóügyfél Alkalmazás</footer>
+  </div>
+
+  <!-- reCAPTCHA v2 Invisible -->
+  <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+
+  <script type="module">
+    import { handleLogin, watchAuthRedirect, RECAPTCHA_SITE_KEY } from "./js/auth.js";
+
+    let recaptchaWidgetId = null;
+
+    // Hidden container for invisible recaptcha
+    const recaptchaContainer = document.createElement("div");
+    recaptchaContainer.id = "recaptcha-login-container";
+    recaptchaContainer.style.display = "none";
+    document.body.appendChild(recaptchaContainer);
+
+    // Called when grecaptcha loads
+    function initRecaptcha() {
+      if (!window.grecaptcha || !grecaptcha.render) return;
+
+      recaptchaWidgetId = grecaptcha.render("recaptcha-login-container", {
+        sitekey: "6LfpLyQsAAAAAGHYocMjBFczz1s7uWocqP5YwlXx",           // <<<<<<<<<<<<<<< PUT YOUR SITE KEY HERE
+        size: "invisible"
+      });
+    }
+
+    // Try to initialize when reCAPTCHA script is fully loaded
+    const recaptchaInterval = setInterval(() => {
+      if (window.grecaptcha && grecaptcha.render) {
+        clearInterval(recaptchaInterval);
+        initRecaptcha();
+      }
+    }, 200);
+
+    // Form elements
+    const form = document.getElementById("login-form");
+    const emailEl = document.getElementById("login-email");
+    const passEl = document.getElementById("login-pass");
+    const submitBtn = document.getElementById("login-btn");
+    const msgEl = document.getElementById("login-msg");
+
+    submitBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      // Initialize if not loaded yet
+      if (!recaptchaWidgetId && window.grecaptcha && grecaptcha.render) initRecaptcha();
+
+      await handleLogin(form, emailEl, passEl, submitBtn, msgEl, recaptchaWidgetId);
+    });
+
+    // Automatically redirect if logged in
+    watchAuthRedirect("/dashboard.html");
+  </script>
+
+</body>
+</html>
